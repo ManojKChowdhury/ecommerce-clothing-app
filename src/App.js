@@ -28,9 +28,9 @@ class App extends React.Component {
                         ...snapshot.data()
                     });
                 })
-            } else {
-                setCurrentUser(userAuth);
             }
+            setCurrentUser(userAuth);
+
         });
     }
 
@@ -48,7 +48,8 @@ class App extends React.Component {
                     <Route exact path='/' component={HomePage}/>
                     <Route path='/shop' component={ShopPage}/>
                     <Route exact path='/checkout' component={CheckoutPage}/>
-                    <Route exact path='/signin' render={() => this.props.currentUser? (<Redirect to='/'/>): (<SignInAndSignUp/>)}/>
+                    <Route exact path='/signin'
+                           render={() => this.props.currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUp/>)}/>
                 </Switch>
             </div>
         );
