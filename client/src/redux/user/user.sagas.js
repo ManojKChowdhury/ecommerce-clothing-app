@@ -9,7 +9,11 @@ import {
     signUpFailure,
     signUpSuccess
 } from "./user.actions";
-import {auth, createUserProfileDocument, getCurrentUser, googleProvider} from "../../firebase/firebase.util";
+import {
+    createUserProfileDocument,
+    getCurrentUser,
+    googleProvider, firebaseAuth
+} from "../../firebase/firebase.util";
 
 export function* getSnapshotFromUserAuth(userAuth, additionalData) {
     try {
@@ -23,7 +27,7 @@ export function* getSnapshotFromUserAuth(userAuth, additionalData) {
 
 export function* signInWithGoogle() {
     try {
-        const {user} = yield auth.signInWithPopup(googleProvider);
+        const {user} = yield firebaseAuth.signInWithPopup(firebaseAuth,googleProvider);
         yield getSnapshotFromUserAuth(user);
     } catch (error) {
         yield put(signInFailure(error));
@@ -32,7 +36,7 @@ export function* signInWithGoogle() {
 
 export function* signInWithEmail({payload: {email, password}}) {
     try {
-        const {user} = yield auth.signInWithEmailAndPassword(email, password);
+        const {user} = yield firebaseAuth.signInWithEmailAndPassword(firebaseAuth,email, password);
         yield getSnapshotFromUserAuth(user);
     } catch (error) {
         put(signInFailure(error));
@@ -51,7 +55,7 @@ export function* isUserAuthenticated() {
 
 export function* signOut() {
     try {
-        yield auth.signOut();
+        yield firebaseAuth.signOut();
         yield (put(signOutSuccess()));
     } catch (error) {
         yield put(signOutFailure(error));
@@ -60,7 +64,7 @@ export function* signOut() {
 
 export function* signUp({payload: {email, password, displayName}}) {
     try {
-        const {user} = yield auth.createUserWithEmailAndPassword(email, password);
+        const {user} = yield firebaseAuth.createUserWithEmailAndPassword(email, password);
         yield put(signUpSuccess({user, additionalData: {displayName}}));
     } catch (error) {
         yield put(signUpFailure(error));
