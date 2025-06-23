@@ -1,7 +1,6 @@
 import {initializeApp} from "firebase/app";
-import {doc} from "firebase/firestore";
-import {onAuthStateChanged, getAuth, GoogleAuthProvider} from "firebase/auth";
-import {collection, getFirestore} from "firebase/firestore";
+import {doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {getAuth, GoogleAuthProvider, onAuthStateChanged} from "firebase/auth";
 
 // TODO: move to env
 const config = {
@@ -15,18 +14,29 @@ const config = {
     measurementId: "G-ZSYYTHY9HK"
 };
 
+initializeApp(config);
+
+export const firebaseAuth = getAuth();
+export const fireStore = getFirestore();
+console.log(fireStore);
+
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({prompt: 'select_account'});
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) {
         return;
     }
-    const userRef = doc(`users/${userAuth.uid}`);
-    const snapShot = await userRef.get();
+
+    const userRef = doc(fireStore,'users',userAuth.uid);
+    const snapShot = await getDoc(userRef);
+
     if (!snapShot.exists) {
         const {email} = userAuth;
         const displayName = userAuth.displayName ? userAuth.displayName : (typeof additionalData === 'string' ? additionalData : '');
         const createdAt = new Date();
         try {
-            await userRef.set({
+            await setDoc(userRef, {
                 displayName,
                 email,
                 createdAt/*,
@@ -57,17 +67,9 @@ export const convertCollectionsSnapshotToMap = (collections) => {
 
 export const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
-      const unsubscribe = onAuthStateChanged(userAuth => {
+      const unsubscribe = onAuthStateChanged(firebaseAuth,userAuth => {
          unsubscribe();
          resolve(userAuth);
       }, reject);
   });
 };
-
-initializeApp(config);
-
-export const firebaseAuth = getAuth();
-export const fireStore = getFirestore();
-
-export const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({prompt: 'select_account'});

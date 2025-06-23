@@ -56,7 +56,7 @@ export const BackgroundImage = styled.div`
   background-size: cover;
   background-position: center;
   margin-bottom: 5px;
-  background-image: ${({ imageUrl }) => `url(${imageUrl})`};
+  background-image: url(${props => props.$imageurl});
 `;
 
 export const CollectionFooterContainer = styled.div`

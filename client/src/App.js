@@ -18,6 +18,11 @@ const App = ({checkUserSession, currentUser}) => {
         checkUserSession();
     }, [checkUserSession]);
 
+    const signInElement = React.useMemo(
+        () => () => (currentUser ? <Navigate to='/' /> : <SignInAndSignUp />),
+        [currentUser]
+    );
+
     return (
         <div>
             <Header/>
@@ -26,7 +31,7 @@ const App = ({checkUserSession, currentUser}) => {
                 <Route path='/shop/*' element={<ShopPage/>}/>
                 <Route path='/checkout' element={<CheckoutPage/>}/>
                 <Route path='/signin'
-                       element={() => currentUser ? (<Navigate to='/'/>) : (<SignInAndSignUp/>)}/>
+                       element={signInElement()}/>
             </Routes>
         </div>
     );
