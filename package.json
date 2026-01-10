@@ -14,7 +14,7 @@
     "postbuild": "cd client && yarn install && yarn install --only=dev --no-shrinkwrap && yarn build"
   },
   "dependencies": {
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "compression": "1.8.0",
     "cors": "2.8.5",
     "dotenv": "16.5.0",
